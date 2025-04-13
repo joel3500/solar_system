@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Système Solaire avec Horloge Dynamique</title>
+  <style>
+    body { margin: 0; background: black; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<script>
+const canvas = document.getElementById('space');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const sun = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  radius: 60,
+  color: 'yellow',
+  name: "Soleil"
+};
+
+const planets = [
+  { name: 'Mercure', orbit: 80, radius: 10, speed: 0.025, angle: 0, color: '#b1b1b1' },
+  { name: 'Vénus', orbit: 130, radius: 16, speed: 0.020, angle: 0, color: '#e1c699' },
+  // La Terre est utilisée pour simuler l'année.
+  { name: 'Terre', orbit: 190, radius: 18, speed: 0.017, angle: 0, color: '#2a75bb' },
+  { name: 'Mars', orbit: 250, radius: 14, speed: 0.014, angle: 0, color: '#c1440e' },
+  { name: 'Jupiter', orbit: 330, radius: 28, speed: 0.010, angle: 0, color: '#d6a77a' },
+  { name: 'Saturne', orbit: 410, radius: 24, speed: 0.008, angle: 0, color: '#e8d49c', hasRings: true },
+  { name: 'Uranus', orbit: 480, radius: 20, speed: 0.006, angle: 0, color: '#a6e7e8' },
+  { name: 'Neptune', orbit: 550, radius: 20, speed: 0.005, angle: 0, color: '#4667d0' }
+];
+
+function drawText(text, x, y, color = 'white', font = '12px Arial', align = 'left') {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y);
+}
+
+/**
+ * Calcule la date simulée en se basant sur l'angle de la Terre.
+ * On considère que l'angle de la Terre (modulo 2π) représente
+ * la progression d'une année (de 0 à 2π correspond à 365 jours).
+ */
+function getSimulatedDate() {
+  const earth = planets.find(p => p.name === 'Terre');
+  if (!earth) return "01/01/2025";
+  // Normaliser l'angle entre 0 et 2π.
+  const angleMod = earth.angle % (2 * Math.PI);
+  const fraction = angleMod / (2 * Math.PI);
+  // Calculer le nombre de jours écoulés sur une année (365 jours)
+  const daysPassed = Math.floor(fraction * 365);
+  // Date de base : 1er janvier d'une année fixe (ici 2025)
+  const baseDate = new Date(2025, 0, 1);
+  baseDate.setDate(baseDate.getDate() + daysPassed);
+  const day = String(baseDate.getDate()).padStart(2, '0');
+  const month = String(baseDate.getMonth() + 1).padStart(2, '0');
+  const year = baseDate.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Fond spatial
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Horloge en haut à droite (date simulée)
+  const dateStr = getSimulatedDate();
+  drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
+
+  // Soleil avec effet de lueur
+  ctx.beginPath();
+  const gradient = ctx.createRadialGradient(sun.x, sun.y, 10, sun.x, sun.y, sun.radius * 2);
+  gradient.addColorStop(0, 'yellow');
+  gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+  ctx.fillStyle = gradient;
+  ctx.arc(sun.x, sun.y, sun.radius * 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.arc(sun.x, sun.y, sun.radius, 0, Math.PI * 2);
+  ctx.fillStyle = sun.color;
+  ctx.fill();
+  ctx.closePath();
+  drawText(sun.name, sun.x, sun.y - sun.radius, 'white', '14px Arial', 'center');
+
+  // Planètes et leurs orbites
+  planets.forEach(planet => {
+    // Orbite
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, planet.orbit, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.stroke();
+    ctx.closePath();
+
+    // Calcul de la position sur l'orbite
+    const x = sun.x + planet.orbit * Math.cos(planet.angle);
+    const y = sun.y + planet.orbit * Math.sin(planet.angle);
+
+    // Pour Saturne, dessiner les anneaux
+    if (planet.hasRings) {
+      ctx.beginPath();
+      ctx.ellipse(x, y, planet.radius * 2.5, planet.radius * 1.2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    // Dessiner la planète
+    ctx.beginPath();
+    ctx.arc(x, y, planet.radius, 0, Math.PI * 2);
+    ctx.fillStyle = planet.color;
+    ctx.fill();
+    ctx.closePath();
+
+    drawText(planet.name, x, y - planet.radius, 'white', '12px Arial', 'center');
+
+    // Mise à jour de l'angle pour l'animation
+    planet.angle += planet.speed;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+</body>
+</html>
+
