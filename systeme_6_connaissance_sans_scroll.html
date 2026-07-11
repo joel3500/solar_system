@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>le Système Solaire - par Joel Sandé</title>
+  <style>
+    body { margin: 0; background: black; overflow: hidden; }
+    canvas { display: block; }
+    footer { 
+      color: grey; 
+      position: absolute;
+      bottom: -10px;
+      left: 10px;
+      width: 100vw;   /* 1/1 de la largeur de l'écran */
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation entre les pages -->
+<nav style="position:fixed;top:12px;right:12px;z-index:9999;display:flex;gap:8px;font-family:Arial,sans-serif;">
+  <a href="index.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">🏠 Accueil</a>
+  <a href="systeme_5_video_incorporee.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">🎬 Vidéo</a>
+  <a href="systeme_7_connaissance_avec_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📜 Dynamique</a>
+</nav>
+
+<canvas id="space"></canvas>
+
+<script>
+const canvas = document.getElementById('space');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const connaissances = [
+    "- Le Soleil est une étoile qui contient 99,8 % de la masse du système solaire.",
+    "- Il y a 8 planètes principales dans le système solaire.",
+    "- Mercure est la planète la plus proche du Soleil.",
+    "- Vénus est la planète la plus chaude à cause de son atmosphère.",
+    "- La Terre est la seule planète connue à abriter la vie.",
+    "- Mars est appelée la planète rouge.",
+    "- Jupiter est la plus grosse planète du système solaire.",
+    "- Saturne possède des anneaux spectaculaires.",
+    "- Uranus tourne sur le côté.",
+    "- Neptune est la planète la plus éloignée du Soleil.",
+    "- Le système solaire s’est formé il y a 4,6 milliards d’années.",
+    "- Un jour sur Mercure dure plus longtemps qu’une année sur Mercure.",
+    "- Pluton est une planète naine.",
+    "- Il existe d'autres planètes naines comme Cérès et Éris.",
+    "- La ceinture d’astéroïdes est située entre Mars et Jupiter.",
+    "- Les comètes proviennent du nuage de Oort et de la ceinture de Kuiper.",
+    "- Les planètes intérieures sont rocheuses.",
+    "- Les planètes extérieures sont gazeuses.",
+    "- Le Soleil produit de l’énergie par fusion nucléaire.",
+    "- La Lune est le seul satellite naturel de la Terre.",
+    "- Mars possède deux lunes : Phobos et Deimos.",
+    "- Jupiter a plus de 70 lunes.",
+    "- Saturne a une lune appelée Titan.",
+    "- Titan a une atmosphère dense.",
+    "- Neptune a une grande tache sombre, une tempête géante.",
+    "- Uranus est de couleur bleu pâle à cause du méthane.",
+    "- Vénus tourne dans le sens inverse des autres planètes.",
+    "- Le champ magnétique terrestre nous protège du vent solaire.",
+    "- Les aurores boréales sont causées par l’interaction du vent solaire et du champ magnétique.",
+    "- La température de surface du Soleil est d’environ 5500°C.",
+    "- Jupiter a une tache rouge géante, une tempête permanente.",
+    "- La gravité sur la Lune est environ 6 fois plus faible que sur Terre.",
+    "- Une année sur Jupiter dure environ 12 ans terrestres.",
+    "- Une année sur Neptune dure 165 ans terrestres.",
+    "- La Terre a une atmosphère riche en oxygène.",
+    "- L’effet de serre permet à la Terre de maintenir une température habitable.",
+    "- Vénus a un effet de serre extrême.",
+    "- Les astéroïdes peuvent entrer en collision avec la Terre.",
+    "- Les météores sont des débris spatiaux qui brûlent dans l’atmosphère.",
+    "- Un satellite artificiel tourne autour de la Terre.",
+    "- Les planètes tournent autour du Soleil dans le même sens.",
+    "- Le Soleil est situé dans la Voie Lactée.",
+    "- La lumière du Soleil met environ 8 minutes pour atteindre la Terre.",
+    "- La masse de Jupiter influence les orbites des autres objets.",
+    "- Les comètes laissent une traînée de poussière et de gaz.",
+    "- La Lune montre toujours la même face à la Terre.",
+    "- Une éclipse solaire se produit quand la Lune passe devant le Soleil.",
+    "- Une éclipse lunaire se produit quand la Terre passe entre le Soleil et la Lune.",
+    "- Les planètes ont des vitesses de rotation différentes.",
+    "- Le Soleil contient principalement de l’hydrogène et de l’hélium."
+];
+
+// Définition du Soleil
+const sun = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  radius: 60,
+  color: 'yellow',
+  name: "Soleil"
+};
+
+// Définition des planètes (vitesse x4 par rapport à la version précédente)
+const planets = [
+  { name: 'Mercure', orbit: 80, radius: 10, speed: 0.025, angle: 0, color: '#b1b1b1' },
+  { name: 'Vénus', orbit: 130, radius: 16, speed: 0.020, angle: 0, color: '#e1c699' },
+  // La Terre est utilisée pour simuler l'année.
+  { name: 'Terre', orbit: 190, radius: 18, speed: 0.017, angle: 0, color: '#2a75bb' },
+  { name: 'Mars', orbit: 250, radius: 14, speed: 0.014, angle: 0, color: '#c1440e' },
+  { name: 'Jupiter', orbit: 330, radius: 28, speed: 0.010, angle: 0, color: '#d6a77a' },
+  { name: 'Saturne', orbit: 410, radius: 24, speed: 0.008, angle: 0, color: '#e8d49c', hasRings: true },
+  { name: 'Uranus', orbit: 480, radius: 20, speed: 0.006, angle: 0, color: '#a6e7e8' },
+  { name: 'Neptune', orbit: 550, radius: 20, speed: 0.005, angle: 0, color: '#4667d0' }
+];
+
+// Création d'une ceinture d'astéroïdes réaliste entre Mars et Jupiter
+// On utilise 300 astéroïdes avec des orbites légèrement elliptiques.
+const asteroids = [];
+const numAsteroids = 300;
+for (let i = 0; i < numAsteroids; i++) {
+  // Orbite entre 250 et 330 (ceinture d'astéroïdes)
+  let orbit = Math.random() * (330 - 250) + 250;
+  // Angle initial aléatoire
+  let angle = Math.random() * 2 * Math.PI;
+  // Excentricité faible (0 à 0.2) pour une orbite légèrement elliptique
+  let ecc = Math.random() * 0.2;
+  // Orientation aléatoire de l'ellipse (en radians)
+  let phi = Math.random() * 2 * Math.PI;
+  // Vitesse basée sur une loi de type Kepler :
+  // Utilisation de la vitesse de la Terre (0.017) et ajustement par (190/orbit)^(3/2)
+  let speed = 0.017 * Math.pow(190 / orbit, 1.5);
+  // Rayon de l'astéroïde entre 1 et 2 pixels
+  let radius = Math.random() * 1 + 1;
+  asteroids.push({ orbit, angle, speed, radius, ecc, phi, color: '#808080' });
+}
+
+// Fonction d'affichage de texte
+function drawText(text, x, y, color = 'white', font = '12px Arial', align = 'left') {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.fillText(text, x, y);
+}
+
+function drawKnowledgeList() {
+    for (let i = 0; i < connaissances.length; i++) {
+        drawText(connaissances[i], 20, 30 + i * 18);
+    }
+}
+
+/**
+ * Calcule la date simulée en se basant sur l'angle de la Terre.
+ * L'angle (modulo 2π) correspond à la progression d'une année (365 jours).
+ */
+function getSimulatedDate() {
+  const earth = planets.find(p => p.name === 'Terre');
+  if (!earth) return "01/01/2025";
+  const angleMod = earth.angle % (2 * Math.PI);
+  const fraction = angleMod / (2 * Math.PI);
+  const daysPassed = Math.floor(fraction * 365);
+  const baseDate = new Date(2025, 0, 1);
+  baseDate.setDate(baseDate.getDate() + daysPassed);
+  const day = String(baseDate.getDate()).padStart(2, '0');
+  const month = String(baseDate.getMonth() + 1).padStart(2, '0');
+  const year = baseDate.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Fonction qui calcule la position d'un astéroïde sur une orbite elliptique avec rotation
+function getAsteroidPosition(asteroid) {
+  // Paramétrisation d'une ellipse :
+  // x' = orbit * cos(angle)
+  // y' = orbit * (1 - ecc) * sin(angle)
+  // Puis rotation de phi
+  const xPrime = asteroid.orbit * Math.cos(asteroid.angle);
+  const yPrime = asteroid.orbit * (1 - asteroid.ecc) * Math.sin(asteroid.angle);
+  const x = sun.x + (xPrime * Math.cos(asteroid.phi) - yPrime * Math.sin(asteroid.phi));
+  const y = sun.y + (xPrime * Math.sin(asteroid.phi) + yPrime * Math.cos(asteroid.phi));
+  return { x, y };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Fond spatial
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Horloge en haut à droite (date simulée)
+  const dateStr = getSimulatedDate();
+  drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
+  
+  // Ecrire les connaissances
+  drawKnowledgeList();  
+
+  // Ecrire le score
+
+  // Soleil avec effet de lueur
+  ctx.beginPath();
+  const gradient = ctx.createRadialGradient(sun.x, sun.y, 10, sun.x, sun.y, sun.radius * 2);
+  gradient.addColorStop(0, 'yellow');
+  gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+  ctx.fillStyle = gradient;
+  ctx.arc(sun.x, sun.y, sun.radius * 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.closePath();
+  
+  ctx.beginPath();
+  ctx.arc(sun.x, sun.y, sun.radius, 0, Math.PI * 2);
+  ctx.fillStyle = sun.color;
+  ctx.fill();
+  ctx.closePath();
+  drawText(sun.name, sun.x, sun.y - sun.radius, 'white', '14px Arial', 'center');
+  
+  // Dessiner la ceinture d'astéroïdes
+  asteroids.forEach(asteroid => {
+    const pos = getAsteroidPosition(asteroid);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, asteroid.radius, 0, Math.PI * 2);
+    ctx.fillStyle = asteroid.color;
+    ctx.fill();
+    ctx.closePath();
+    // Mise à jour de l'angle de l'astéroïde
+    asteroid.angle += asteroid.speed;
+  });
+  
+  // Planètes et leurs orbites
+  planets.forEach(planet => {
+    // Orbite
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, planet.orbit, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.stroke();
+    ctx.closePath();
+    
+    // Position sur l'orbite circulaire
+    const x = sun.x + planet.orbit * Math.cos(planet.angle);
+    const y = sun.y + planet.orbit * Math.sin(planet.angle);
+    
+    // Pour Saturne, dessiner les anneaux
+    if (planet.hasRings) {
+      ctx.beginPath();
+      ctx.ellipse(x, y, planet.radius * 2.5, planet.radius * 1.2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.closePath();
+    }
+    
+    // Dessiner la planète
+    ctx.beginPath();
+    ctx.arc(x, y, planet.radius, 0, Math.PI * 2);
+    ctx.fillStyle = planet.color;
+    ctx.fill();
+    ctx.closePath();
+    drawText(planet.name, x, y - planet.radius, 'white', '12px Arial', 'center');
+    
+    // Mise à jour de l'angle
+    planet.angle += planet.speed;
+  });
+  
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+</script>
+<!-- Footer avec texte ajouté -->
+  <footer>  
+    <p> &copy; Système Solaire - Tous droits réservés ( créé par Joel Sandé, Saguenay ) à but éducatif : apprendre en s'amusant. Animation pour faciliter les apprentissages scolaires. Primaire, Secondaire.
+        <br> * * * Merci de partager massivement ce jeu éducatif :) * * * 
+    </p>
+  </footer>
+</body>
+</html>
