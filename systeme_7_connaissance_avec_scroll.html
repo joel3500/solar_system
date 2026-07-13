@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>le Système Solaire - par Joel Sandé</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; }
@@ -34,6 +35,11 @@ const canvas = document.getElementById('space');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+// Texte plus grand sur téléphone pour rester lisible sans zoom
+const isMobile = window.innerWidth < 700;
+const knowledgeFont = isMobile ? '19px Arial' : '12px Arial';
+const knowledgeLineHeight = isMobile ? 24 : 18;
 
 const connaissances = [
     "- Le Soleil est une étoile qui contient 99,8 % de la masse du système solaire.",
@@ -89,7 +95,7 @@ const connaissances = [
 ];
 
 // --- Paramètres d'affichage défilant pour les connaissances ---
-const visibleCount = 26;           // Nombre d'infos visibles à la fois
+const visibleCount = Math.max(5, Math.floor((canvas.height - 80) / knowledgeLineHeight)); // Nombre d'infos visibles à la fois, adapté à la hauteur d'écran
 let startIndex = 0;                 // Index de départ dans le tableau 'connaissances'
 let lastScrollTime = 0;             // Temps du dernier défilement (ms)
 const scrollIntervalMs = 3000;      // Intervalle de défilement (3 secondes)
@@ -153,8 +159,8 @@ function drawKnowledgeList() {
     for (let i = 0; i < visibleCount; i++) {
         const idx = (startIndex + i) % total;
         // Position verticale : la 1ère info en haut, les suivantes en dessous
-        const y = 60 + i * 18;  // 18px d'interligne
-        drawText(connaissances[idx], 20, y);
+        const y = 60 + i * knowledgeLineHeight;
+        drawText(connaissances[idx], 20, y, 'white', knowledgeFont);
     }
 }
 

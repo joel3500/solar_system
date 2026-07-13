@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>le Système Solaire - par Joel Sandé</title>
   <style>
     body { margin: 0; background: black; overflow: hidden; }
@@ -32,6 +33,11 @@ const canvas = document.getElementById('space');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+// Texte plus grand sur téléphone pour rester lisible sans zoom
+const isMobile = window.innerWidth < 700;
+const knowledgeFont = isMobile ? '19px Arial' : '12px Arial';
+const knowledgeLineHeight = isMobile ? 24 : 18;
 
 const connaissances = [
     "- Le Soleil est une étoile qui contient 99,8 % de la masse du système solaire.",
@@ -139,7 +145,7 @@ function drawText(text, x, y, color = 'white', font = '12px Arial', align = 'lef
 
 function drawKnowledgeList() {
     for (let i = 0; i < connaissances.length; i++) {
-        drawText(connaissances[i], 20, 30 + i * 18);
+        drawText(connaissances[i], 20, 30 + i * knowledgeLineHeight, 'white', knowledgeFont);
     }
 }
 
