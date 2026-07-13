@@ -38,14 +38,20 @@
       color: black;
       background: #e8d49c;
       text-decoration: none;
-      font-size: 1.2em;
-      padding: 12px 24px;
+      font-size: 1.5em;
+      padding: 14px 26px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.5);
       transition: transform 0.2s;
     }
     nav a:hover {
       transform: scale(1.05);
+    }
+    @media (max-width: 700px) {
+      nav a {
+        font-size: 1.7em;
+        padding: 16px 22px;
+      }
     }
     footer {
       color: grey;

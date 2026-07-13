@@ -39,6 +39,14 @@ const isMobile = window.innerWidth < 700;
 const knowledgeFont = isMobile ? '19px Arial' : '12px Arial';
 const knowledgeLineHeight = isMobile ? 24 : 18;
 
+// Cadre occupant 90% de l'écran : le texte s'y enroule automatiquement
+const boxWidth = canvas.width * 0.9;
+const boxHeight = canvas.height * 0.9;
+const boxX = (canvas.width - boxWidth) / 2;
+const boxY = (canvas.height - boxHeight) / 2;
+const boxPadding = 20;
+const textMaxWidth = boxWidth - boxPadding * 2;
+
 const connaissances = [
     "- Le Soleil est une étoile qui contient 99,8 % de la masse du système solaire.",
     "- Il y a 8 planètes principales dans le système solaire.",
@@ -92,6 +100,9 @@ const connaissances = [
     "- Le Soleil contient principalement de l’hydrogène et de l’hélium."
 ];
 
+// Découpe chaque connaissance en lignes qui tiennent dans la largeur du cadre
+const wrappedConnaissances = connaissances.map(text => wrapText(text, textMaxWidth, knowledgeFont));
+
 // Définition du Soleil
 const sun = {
   x: canvas.width / 2,
@@ -143,10 +154,39 @@ function drawText(text, x, y, color = 'white', font = '12px Arial', align = 'lef
   ctx.fillText(text, x, y);
 }
 
-function drawKnowledgeList() {
-    for (let i = 0; i < connaissances.length; i++) {
-        drawText(connaissances[i], 20, 30 + i * knowledgeLineHeight, 'white', knowledgeFont);
+// Découpe un texte en plusieurs lignes pour qu'il tienne dans maxWidth
+function wrapText(text, maxWidth, font) {
+  ctx.font = font;
+  const words = text.split(' ');
+  const lines = [];
+  let currentLine = words[0] || '';
+  for (let i = 1; i < words.length; i++) {
+    const testLine = currentLine + ' ' + words[i];
+    if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = words[i];
+    } else {
+      currentLine = testLine;
     }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+function drawKnowledgeBorder() {
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+}
+
+function drawKnowledgeList() {
+    let y = boxY + boxPadding + knowledgeLineHeight * 0.6;
+    wrappedConnaissances.forEach(lines => {
+        lines.forEach(line => {
+            drawText(line, boxX + boxPadding, y, 'white', knowledgeFont);
+            y += knowledgeLineHeight;
+        });
+    });
 }
 
 /**
@@ -191,8 +231,11 @@ function draw() {
   const dateStr = getSimulatedDate();
   drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
   
+  // Cadre contenant les connaissances (90% de l'écran)
+  drawKnowledgeBorder();
+
   // Ecrire les connaissances
-  drawKnowledgeList();  
+  drawKnowledgeList();
 
   // Ecrire le score
 
