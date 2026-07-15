@@ -18,13 +18,36 @@
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-    footer { 
-      color: grey; 
+    footer {
+      color: grey;
       position: absolute;
       bottom: -10px;
       left: 10px;
       width: 100vw;   /* 1/1 de la largeur de l'écran */
       text-align: center;
+    }
+    #langSwitcher {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      z-index: 9999;
+      display: flex;
+      gap: 6px;
+    }
+    .lang-btn {
+      background: #a6e7e8;
+      color: black;
+      border: 0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    }
+    .lang-btn.active {
+      outline: 2px solid white;
+      font-weight: bold;
     }
   </style>
 
@@ -35,44 +58,49 @@
 
   <!-- Vidéo éducative intégrée -->
   <video id="eduVideo" src="presentation_1_systeme_solaire.mp4" controls>
-    Votre navigateur ne supporte pas la balise <code>video</code>.
+    <span id="videoFallback">Votre navigateur ne supporte pas la balise video.</span>
   </video>
 
   <!-- Navigation entre les pages -->
   <nav style="position:fixed;top:12px;right:12px;z-index:9999;display:flex;gap:8px;font-family:Arial,sans-serif;">
-    <a href="index.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">🏠 Accueil</a>
-    <a href="systeme_6_connaissance_sans_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📖 Statique</a>
-    <a href="systeme_7_connaissance_avec_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📜 Dynamique</a>
+    <a id="navHome" href="index.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">🏠 Accueil</a>
+    <a id="navStatic" href="systeme_6_connaissance_sans_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📖 Statique</a>
+    <a id="navDynamic" href="systeme_7_connaissance_avec_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📜 Dynamique</a>
   </nav>
 
+  <!-- Sélecteur de langue -->
+  <div id="langSwitcher"></div>
+
+  <script src="i18n.js"></script>
   <script>
 
     const canvas = document.getElementById('space');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
+    let currentLang = getSolarLang();
+
     // (Toutes les définitions de soleil, planètes, astéroïdes, etc.)
     // Définition du Soleil
     const sun = {
       x: canvas.width / 2,
       y: canvas.height / 2,
       radius: 60,
-      color: 'yellow',
-      name: "Soleil"
+      color: 'yellow'
     };
 
     // Définition des planètes (vitesse x4 par rapport à la version précédente)
     const planets = [
-      { name: 'Mercure', orbit: 80, radius: 10, speed: 0.025, angle: 0, color: '#b1b1b1' },
-      { name: 'Vénus', orbit: 130, radius: 16, speed: 0.020, angle: 0, color: '#e1c699' },
+      { key: 'mercure', orbit: 80, radius: 10, speed: 0.025, angle: 0, color: '#b1b1b1' },
+      { key: 'venus', orbit: 130, radius: 16, speed: 0.020, angle: 0, color: '#e1c699' },
       // La Terre est utilisée pour simuler l'année.
-      { name: 'Terre', orbit: 190, radius: 18, speed: 0.017, angle: 0, color: '#2a75bb' },
-      { name: 'Mars', orbit: 250, radius: 14, speed: 0.014, angle: 0, color: '#c1440e' },
-      { name: 'Jupiter', orbit: 330, radius: 28, speed: 0.010, angle: 0, color: '#d6a77a' },
-      { name: 'Saturne', orbit: 410, radius: 24, speed: 0.008, angle: 0, color: '#e8d49c', hasRings: true },
-      { name: 'Uranus', orbit: 480, radius: 20, speed: 0.006, angle: 0, color: '#a6e7e8' },
-      { name: 'Neptune', orbit: 550, radius: 20, speed: 0.005, angle: 0, color: '#4667d0' }
+      { key: 'terre', orbit: 190, radius: 18, speed: 0.017, angle: 0, color: '#2a75bb' },
+      { key: 'mars', orbit: 250, radius: 14, speed: 0.014, angle: 0, color: '#c1440e' },
+      { key: 'jupiter', orbit: 330, radius: 28, speed: 0.010, angle: 0, color: '#d6a77a' },
+      { key: 'saturne', orbit: 410, radius: 24, speed: 0.008, angle: 0, color: '#e8d49c', hasRings: true },
+      { key: 'uranus', orbit: 480, radius: 20, speed: 0.006, angle: 0, color: '#a6e7e8' },
+      { key: 'neptune', orbit: 550, radius: 20, speed: 0.005, angle: 0, color: '#4667d0' }
     ];
 
     // Création d'une ceinture d'astéroïdes réaliste entre Mars et Jupiter
@@ -109,7 +137,7 @@
      * L'angle (modulo 2π) correspond à la progression d'une année (365 jours).
      */
     function getSimulatedDate() {
-      const earth = planets.find(p => p.name === 'Terre');
+      const earth = planets.find(p => p.key === 'terre');
       if (!earth) return "01/01/2025";
       const angleMod = earth.angle % (2 * Math.PI);
       const fraction = angleMod / (2 * Math.PI);
@@ -137,15 +165,15 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         // Fond spatial
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         // Horloge en haut à droite (date simulée)
         const dateStr = getSimulatedDate();
         drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
-        
+
         // Soleil avec effet de lueur
         ctx.beginPath();
         const gradient = ctx.createRadialGradient(sun.x, sun.y, 10, sun.x, sun.y, sun.radius * 2);
@@ -155,14 +183,14 @@
         ctx.arc(sun.x, sun.y, sun.radius * 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
-        
+
         ctx.beginPath();
         ctx.arc(sun.x, sun.y, sun.radius, 0, Math.PI * 2);
         ctx.fillStyle = sun.color;
         ctx.fill();
         ctx.closePath();
-        drawText(sun.name, sun.x, sun.y - sun.radius, 'white', '14px Arial', 'center');
-        
+        drawText(SOLAR_TRANSLATIONS[currentLang].sun, sun.x, sun.y - sun.radius, 'white', '14px Arial', 'center');
+
         // Dessiner la ceinture d'astéroïdes
         asteroids.forEach(asteroid => {
           const pos = getAsteroidPosition(asteroid);
@@ -174,7 +202,7 @@
           // Mise à jour de l'angle de l'astéroïde
           asteroid.angle += asteroid.speed;
         });
-    
+
         // Planètes et leurs orbites
         planets.forEach(planet => {
           // Orbite
@@ -183,11 +211,11 @@
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
           ctx.stroke();
           ctx.closePath();
-          
+
           // Position sur l'orbite circulaire
           const x = sun.x + planet.orbit * Math.cos(planet.angle);
           const y = sun.y + planet.orbit * Math.sin(planet.angle);
-          
+
           // Pour Saturne, dessiner les anneaux
           if (planet.hasRings) {
             ctx.beginPath();
@@ -197,15 +225,15 @@
             ctx.stroke();
             ctx.closePath();
           }
-          
+
           // Dessiner la planète
           ctx.beginPath();
           ctx.arc(x, y, planet.radius, 0, Math.PI * 2);
           ctx.fillStyle = planet.color;
           ctx.fill();
           ctx.closePath();
-          drawText(planet.name, x, y - planet.radius, 'white', '12px Arial', 'center');
-          
+          drawText(SOLAR_TRANSLATIONS[currentLang].planets[planet.key], x, y - planet.radius, 'white', '12px Arial', 'center');
+
           // Mise à jour de l'angle
           planet.angle += planet.speed;
         });
@@ -215,12 +243,27 @@
 
     draw();
 
+    function updateStaticText(lang) {
+      const t = SOLAR_TRANSLATIONS[lang];
+      document.title = t.title5;
+      document.getElementById('navHome').textContent = t.nav.home;
+      document.getElementById('navStatic').textContent = t.nav.static;
+      document.getElementById('navDynamic').textContent = t.nav.dynamic;
+      document.getElementById('videoFallback').textContent = t.videoFallback;
+      document.getElementById('pageFooter').innerHTML = t.footer5;
+    }
+
+    initLanguageSwitcher('langSwitcher', function(lang) {
+      currentLang = lang;
+      updateStaticText(lang);
+    });
+
   </script>
 
   <!-- Footer avec texte ajouté -->
-  <footer>  
-    <p> &copy; Système Solaire - Tous droits réservés ( créé par Joel Sandé, Saguenay ) à but éducatif : j'apprends en m'amusant. Animation pour faciliter mes apprentissages scolaires. Primaire, Secondaire.
-        <br> * * * Merci de partager massivement ce jeu éducatif :) * * * 
+  <footer>
+    <p id="pageFooter"> &copy; Système Solaire - Tous droits réservés ( créé par Joel Sandé, Saguenay ) à but éducatif : j'apprends en m'amusant. Animation pour faciliter mes apprentissages scolaires. Primaire, Secondaire.
+        <br> * * * Merci de partager massivement ce jeu éducatif :) * * *
         <br> Si vous pensez la connaitre, envoyez-moi la reponse à cette dernière question à oremi.joel@gmail.com.
         <br> Robert Vaillancourt, depuis Londres : Je pense qu'il y a plein de cratères sur Mars parce que ...
     </p>
