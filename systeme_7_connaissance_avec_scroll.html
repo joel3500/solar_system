@@ -7,21 +7,27 @@
   <style>
     body { margin: 0; background: black; overflow: hidden; }
     canvas { display: block; }
-    footer {
-      color: grey;
-      position: absolute;
-      bottom: -10px;
-      left: 10px;
-      width: 100vw;   /* 1/1 de la largeur de l'écran */
-      text-align: center;
-    }
-    #langSwitcher {
+    #bottomBar {
       position: fixed;
-      bottom: 12px;
-      left: 12px;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 9999;
       display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 6px;
+      width: 100%;
+    }
+    #langSwitcher {
+      display: flex;
+      gap: 6px;
+    }
+    footer {
+      color: grey;
+      text-align: center;
+      width: 90vw;
+      margin: 0;
     }
     .lang-btn {
       background: #a6e7e8;
@@ -50,10 +56,17 @@
   <a id="navStatic" href="systeme_6_connaissance_sans_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📖 Statique</a>
 </nav>
 
-<!-- Sélecteur de langue -->
-<div id="langSwitcher"></div>
-
 <canvas id="space"></canvas>
+
+<!-- Sélecteur de langue et pied de page, empilés en bas -->
+<div id="bottomBar">
+  <div id="langSwitcher"></div>
+  <footer>
+    <p id="pageFooter"> &copy; Système Solaire - Tous droits réservés ( animation créée par Joel Sandé, du Saguenay Lac Saint-Jean ) à but éducatif : apprendre en s'amusant. Animation pour faciliter les apprentissages scolaires. Primaire, Secondaire.
+        <br> * * * Merci de partager massivement cette animation éducative :) * * *
+    </p>
+  </footer>
+</div>
 
 <script src="i18n.js"></script>
 <script>
@@ -231,9 +244,9 @@ function draw() {
     lastScrollTime = now;
   }
 
-  // Horloge en haut à droite (date simulée)
+  // Horloge (date simulée), sous la barre de navigation pour ne pas être cachée
   const dateStr = getSimulatedDate();
-  drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
+  drawText(dateStr, canvas.width - 20, 70, 'white', '16px Arial', 'right');
 
   // Cadre contenant les connaissances (90% x 80% de l'écran)
   drawKnowledgeBorder();
@@ -363,11 +376,5 @@ initLanguageSwitcher('langSwitcher', function(lang) {
 });
 
 </script>
-<!-- Footer avec texte ajouté -->
-  <footer>
-    <p id="pageFooter"> &copy; Système Solaire - Tous droits réservés ( animation créée par Joel Sandé, du Saguenay Lac Saint-Jean ) à but éducatif : apprendre en s'amusant. Animation pour faciliter les apprentissages scolaires. Primaire, Secondaire.
-        <br> * * * Merci de partager massivement cette animation éducative :) * * *
-    </p>
-  </footer>
 </body>
 </html>

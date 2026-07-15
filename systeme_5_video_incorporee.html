@@ -18,21 +18,27 @@
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-    footer {
-      color: grey;
-      position: absolute;
-      bottom: -10px;
-      left: 10px;
-      width: 100vw;   /* 1/1 de la largeur de l'écran */
-      text-align: center;
-    }
-    #langSwitcher {
+    #bottomBar {
       position: fixed;
-      bottom: 12px;
-      left: 12px;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 9999;
       display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 6px;
+      width: 100%;
+    }
+    #langSwitcher {
+      display: flex;
+      gap: 6px;
+    }
+    footer {
+      color: grey;
+      text-align: center;
+      width: 90vw;
+      margin: 0;
     }
     .lang-btn {
       background: #a6e7e8;
@@ -68,8 +74,17 @@
     <a id="navDynamic" href="systeme_7_connaissance_avec_scroll.html" style="background:#e8d49c;color:black;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.4);">📜 Dynamique</a>
   </nav>
 
-  <!-- Sélecteur de langue -->
-  <div id="langSwitcher"></div>
+  <!-- Sélecteur de langue et pied de page, empilés en bas -->
+  <div id="bottomBar">
+    <div id="langSwitcher"></div>
+    <footer>
+      <p id="pageFooter"> &copy; Système Solaire - Tous droits réservés ( créé par Joel Sandé, Saguenay ) à but éducatif : j'apprends en m'amusant. Animation pour faciliter mes apprentissages scolaires. Primaire, Secondaire.
+          <br> * * * Merci de partager massivement ce jeu éducatif :) * * *
+          <br> Si vous pensez la connaitre, envoyez-moi la reponse à cette dernière question à oremi.joel@gmail.com.
+          <br> Robert Vaillancourt, depuis Londres : Je pense qu'il y a plein de cratères sur Mars parce que ...
+      </p>
+    </footer>
+  </div>
 
   <script src="i18n.js"></script>
   <script>
@@ -170,9 +185,9 @@
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Horloge en haut à droite (date simulée)
+        // Horloge (date simulée), sous la barre de navigation pour ne pas être cachée
         const dateStr = getSimulatedDate();
-        drawText(dateStr, canvas.width - 20, 30, 'white', '16px Arial', 'right');
+        drawText(dateStr, canvas.width - 20, 70, 'white', '16px Arial', 'right');
 
         // Soleil avec effet de lueur
         ctx.beginPath();
@@ -259,15 +274,6 @@
     });
 
   </script>
-
-  <!-- Footer avec texte ajouté -->
-  <footer>
-    <p id="pageFooter"> &copy; Système Solaire - Tous droits réservés ( créé par Joel Sandé, Saguenay ) à but éducatif : j'apprends en m'amusant. Animation pour faciliter mes apprentissages scolaires. Primaire, Secondaire.
-        <br> * * * Merci de partager massivement ce jeu éducatif :) * * *
-        <br> Si vous pensez la connaitre, envoyez-moi la reponse à cette dernière question à oremi.joel@gmail.com.
-        <br> Robert Vaillancourt, depuis Londres : Je pense qu'il y a plein de cratères sur Mars parce que ...
-    </p>
-  </footer>
 
 </body>
 </html>
