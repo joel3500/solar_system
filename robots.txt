@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://joel3500.github.io/solar_system/sitemap.xml

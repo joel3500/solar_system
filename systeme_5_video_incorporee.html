@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Système Solaire avec Vidéo Éducative</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Système Solaire avec Vidéo Éducative - Jeu éducatif gratuit</title>
+  <meta name="description" content="Vidéo éducative animée sur le système solaire : le Soleil, les 8 planètes et une ceinture d'astéroïdes en mouvement. Jeu gratuit pour le primaire et le secondaire.">
+  <link rel="canonical" href="https://joel3500.github.io/solar_system/systeme_5_video_incorporee.html">
+  <meta property="og:title" content="Système Solaire avec Vidéo Éducative">
+  <meta property="og:description" content="Vidéo éducative animée sur le système solaire, pour le primaire et le secondaire.">
+  <meta property="og:image" content="https://joel3500.github.io/solar_system/systeme_1.jpg">
+  <meta property="og:url" content="https://joel3500.github.io/solar_system/systeme_5_video_incorporee.html">
+  <meta property="og:type" content="website">
   <style>
     body { margin: 0; background: black; overflow: hidden; }
     canvas { display: block; }
@@ -55,10 +63,23 @@
       outline: 2px solid white;
       font-weight: bold;
     }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 
 </head>
 <body>
+  <!-- Contenu textuel pour l'accessibilité et le référencement (masqué visuellement) -->
+  <h1 id="pageH1" class="visually-hidden">Système Solaire avec Vidéo Éducative</h1>
+  <p id="pageIntro" class="visually-hidden">Vidéo éducative animée sur le système solaire : le Soleil, les 8 planètes et une ceinture d'astéroïdes en mouvement, pour le primaire et le secondaire.</p>
+
   <!-- Canvas du système solaire -->
   <canvas id="space"></canvas>
 
@@ -260,7 +281,10 @@
 
     function updateStaticText(lang) {
       const t = SOLAR_TRANSLATIONS[lang];
+      document.documentElement.lang = lang;
       document.title = t.title5;
+      document.getElementById('pageH1').textContent = t.title5;
+      document.getElementById('pageIntro').textContent = t.videoIntro;
       document.getElementById('navHome').textContent = t.nav.home;
       document.getElementById('navStatic').textContent = t.nav.static;
       document.getElementById('navDynamic').textContent = t.nav.dynamic;

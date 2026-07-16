@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>le Système Solaire - par Joel Sandé</title>
+  <title>Le Système Solaire animé : connaissances défilantes - Jeu éducatif</title>
+  <meta name="description" content="Animation du système solaire avec défilement automatique de connaissances sur le Soleil, les planètes, les lunes et les comètes. Jeu éducatif gratuit pour le primaire et le secondaire.">
+  <link rel="canonical" href="https://joel3500.github.io/solar_system/systeme_7_connaissance_avec_scroll.html">
+  <meta property="og:title" content="Le Système Solaire animé : connaissances défilantes">
+  <meta property="og:description" content="Animation du système solaire avec défilement automatique de connaissances sur le Soleil et les planètes.">
+  <meta property="og:image" content="https://joel3500.github.io/solar_system/systeme_1.jpg">
+  <meta property="og:url" content="https://joel3500.github.io/solar_system/systeme_7_connaissance_avec_scroll.html">
+  <meta property="og:type" content="website">
   <style>
     body { margin: 0; background: black; overflow: hidden; }
     canvas { display: block; }
@@ -44,9 +51,75 @@
       outline: 2px solid white;
       font-weight: bold;
     }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 </head>
 <body>
+<!-- Contenu textuel pour l'accessibilité et le référencement (masqué visuellement, l'animation reprend les mêmes informations sur le canevas) -->
+<div class="visually-hidden">
+  <h1 id="pageH1">Le Système Solaire animé : connaissances défilantes</h1>
+  <p id="pageIntro">Découvre le Soleil et les 8 planètes du système solaire à travers 50 connaissances qui défilent automatiquement, pour le primaire et le secondaire.</p>
+  <ul id="pageFactsList">
+    <li>Le Soleil est une étoile qui contient 99,8 % de la masse du système solaire.</li>
+    <li>Il y a 8 planètes principales dans le système solaire.</li>
+    <li>Mercure est la planète la plus proche du Soleil.</li>
+    <li>Vénus est la planète la plus chaude à cause de son atmosphère.</li>
+    <li>La Terre est la seule planète connue à abriter la vie.</li>
+    <li>Mars est appelée la planète rouge.</li>
+    <li>Jupiter est la plus grosse planète du système solaire.</li>
+    <li>Saturne possède des anneaux spectaculaires.</li>
+    <li>Uranus tourne sur le côté.</li>
+    <li>Neptune est la planète la plus éloignée du Soleil.</li>
+    <li>Le système solaire s'est formé il y a 4,6 milliards d'années.</li>
+    <li>Un jour sur Mercure dure plus longtemps qu'une année sur Mercure.</li>
+    <li>Pluton est une planète naine.</li>
+    <li>Il existe d'autres planètes naines comme Cérès et Éris.</li>
+    <li>La ceinture d'astéroïdes est située entre Mars et Jupiter.</li>
+    <li>Les comètes proviennent du nuage de Oort et de la ceinture de Kuiper.</li>
+    <li>Les planètes intérieures sont rocheuses.</li>
+    <li>Les planètes extérieures sont gazeuses.</li>
+    <li>Le Soleil produit de l'énergie par fusion nucléaire.</li>
+    <li>La Lune est le seul satellite naturel de la Terre.</li>
+    <li>Mars possède deux lunes : Phobos et Deimos.</li>
+    <li>Jupiter a plus de 70 lunes.</li>
+    <li>Saturne a une lune appelée Titan.</li>
+    <li>Titan a une atmosphère dense.</li>
+    <li>Neptune a une grande tache sombre, une tempête géante.</li>
+    <li>Uranus est de couleur bleu pâle à cause du méthane.</li>
+    <li>Vénus tourne dans le sens inverse des autres planètes.</li>
+    <li>Le champ magnétique terrestre nous protège du vent solaire.</li>
+    <li>Les aurores boréales sont causées par l'interaction du vent solaire et du champ magnétique.</li>
+    <li>La température de surface du Soleil est d'environ 5500°C.</li>
+    <li>Jupiter a une tache rouge géante, une tempête permanente.</li>
+    <li>La gravité sur la Lune est environ 6 fois plus faible que sur Terre.</li>
+    <li>Une année sur Jupiter dure environ 12 ans terrestres.</li>
+    <li>Une année sur Neptune dure 165 ans terrestres.</li>
+    <li>La Terre a une atmosphère riche en oxygène.</li>
+    <li>L'effet de serre permet à la Terre de maintenir une température habitable.</li>
+    <li>Vénus a un effet de serre extrême.</li>
+    <li>Les astéroïdes peuvent entrer en collision avec la Terre.</li>
+    <li>Les météores sont des débris spatiaux qui brûlent dans l'atmosphère.</li>
+    <li>Un satellite artificiel tourne autour de la Terre.</li>
+    <li>Les planètes tournent autour du Soleil dans le même sens.</li>
+    <li>Le Soleil est situé dans la Voie Lactée.</li>
+    <li>La lumière du Soleil met environ 8 minutes pour atteindre la Terre.</li>
+    <li>La masse de Jupiter influence les orbites des autres objets.</li>
+    <li>Les comètes laissent une traînée de poussière et de gaz.</li>
+    <li>La Lune montre toujours la même face à la Terre.</li>
+    <li>Une éclipse solaire se produit quand la Lune passe devant le Soleil.</li>
+    <li>Une éclipse lunaire se produit quand la Terre passe entre le Soleil et la Lune.</li>
+    <li>Les planètes ont des vitesses de rotation différentes.</li>
+    <li>Le Soleil contient principalement de l'hydrogène et de l'hélium.</li>
+  </ul>
+</div>
 <button id="toggleScrollBtn" style="position:fixed;top:12px;left:12px;padding:8px 14px;font-family:system-ui,Arial,sans-serif;font-size:14px;border:0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;z-index:9999;">Pause</button>
 
 <!-- Navigation entre les pages -->
@@ -361,12 +434,23 @@ function updatePauseButton() {
 
 function updateStaticText(lang) {
   const t = SOLAR_TRANSLATIONS[lang];
+  document.documentElement.lang = lang;
   document.title = t.title7;
+  document.getElementById('pageH1').textContent = t.title7;
+  document.getElementById('pageIntro').textContent = t.dynamicIntro;
   document.getElementById('navHome').textContent = t.nav.home;
   document.getElementById('navVideo').textContent = t.nav.video;
   document.getElementById('navStatic').textContent = t.nav.static;
   document.getElementById('pageFooter').innerHTML = t.footer7;
   updatePauseButton();
+
+  const factsList = document.getElementById('pageFactsList');
+  factsList.innerHTML = '';
+  t.connaissances.forEach(fact => {
+    const li = document.createElement('li');
+    li.textContent = fact.replace(/^-\s*/, '');
+    factsList.appendChild(li);
+  });
 }
 
 initLanguageSwitcher('langSwitcher', function(lang) {

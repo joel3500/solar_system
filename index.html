@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>J'apprends le système solaire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>J'apprends le système solaire - Jeu éducatif gratuit</title>
+  <meta name="description" content="Jeu éducatif gratuit sur le système solaire pour le primaire et le secondaire : vidéo, informations statiques et animées sur le Soleil et les 8 planètes. Disponible en français, anglais, espagnol, allemand et italien.">
+  <link rel="canonical" href="https://joel3500.github.io/solar_system/index.html">
+  <meta property="og:title" content="J'apprends le système solaire">
+  <meta property="og:description" content="Jeu éducatif gratuit sur le système solaire : vidéo, informations statiques et animées sur le Soleil et les planètes.">
+  <meta property="og:image" content="https://joel3500.github.io/solar_system/systeme_1.jpg">
+  <meta property="og:url" content="https://joel3500.github.io/solar_system/index.html">
+  <meta property="og:type" content="website">
   <style>
     body {
       margin: 0;
@@ -86,6 +94,7 @@
 <body>
 
   <h1 id="pageH1">J'apprends le système solaire</h1>
+  <p id="pageIntro" style="max-width:70vw;color:#ccc;">Un jeu éducatif gratuit pour découvrir le Soleil et les 8 planètes : vidéo, informations statiques et animées, pour le primaire et le secondaire.</p>
 
   <img id="pageImg" src="systeme_1.jpg" alt="Le système solaire">
 
@@ -106,8 +115,10 @@
     document.title = SOLAR_TRANSLATIONS[getSolarLang()].indexTitle;
     initLanguageSwitcher('langSwitcher', function(lang) {
       const t = SOLAR_TRANSLATIONS[lang];
+      document.documentElement.lang = lang;
       document.title = t.indexTitle;
       document.getElementById('pageH1').textContent = t.indexH1;
+      document.getElementById('pageIntro').textContent = t.indexIntro;
       document.getElementById('pageImg').alt = t.indexImgAlt;
       document.getElementById('navVideo').textContent = t.indexNavVideo;
       document.getElementById('navStatic').textContent = t.indexNavStatic;
